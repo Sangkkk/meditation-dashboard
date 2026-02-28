@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Summary Report: สถิติผู้เข้าปฏิบัติธรรม</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#1F3A8A',
+                        lightgray: '#F3F4F6'
+                    },
+                    fontFamily: {
+                        sarabun: ['"Sarabun"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #F3F4F6;
+            color: #374151;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        /* Website Container Setup */
+        .website-container {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+        }
+        
+        /* Fixed Header */
+        .header-section {
+            background-color: #1F3A8A;
+            color: white;
+            padding: 1.5rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Modern Dropdown Menus */
+        .nav-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        select.custom-select {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.6rem 2.5rem 0.6rem 1rem;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+        select.custom-select:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        select.custom-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+        select.custom-select option {
+            background-color: #ffffff;
+            color: #1F3A8A;
+            font-weight: 500;
+        }
+
+        .view-btn {
+            background-color: white;
+            color: #1F3A8A;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .view-btn:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content Layout (16:9 ratio feel inside sections) */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background-color: #F8FAFC;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            border: 1px solid #E2E8F0;
+            transition: box-shadow 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+        }
+
+        .kpi-title { font-size: 0.95rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 2.5rem; font-weight: 700; color: #0f172a; line-height: 1.2; }
+        .kpi-unit { font-size: 1rem; color: #94a3b8; font-weight: 500; margin-left: 0.25rem; }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1F3A8A;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        table th { background-color: #F8FAFC; position: sticky; top: 0; z-index: 10; font-weight: 600; color: #475569; }
+        table tr { border-bottom: 1px solid #F1F5F9; transition: background-color 0.2s; }
+        table tr:hover { background-color: #F0F9FF; }
+
+        /* Insight List */
+        .insight-list li {
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+            color: #334155;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .insight-list li::before {
+            content: "•";
+            color: #3B82F6;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="website-container">
+        
+        <!-- Header -->
+        <div class="header-section">
+            <div class="header-content">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">สถิติผู้เข้าปฏิบัติธรรม สถาบันวิปัสสนาธุระ มจร</h1>
+                    <p class="text-blue-200 text-base mt-1" id="header-desc">สรุปภาพรวมจำนวนผู้เข้าร่วมตามปีงบประมาณ 2565–2569</p>
+                </div>
+                
+                <div class="nav-controls">
+                    <!-- Dropdown ปีงบประมาณ -->
+                    <div class="custom-select-wrapper">
+                        <select class="custom-select" id="year-dropdown" onchange="populateEvents(); handleFilterChange();">
+                            <option value="All">ปีงบ 2565 - 2569 (ทั้งหมด)</option>
+                            <option value="2565">ปีงบ 2565</option>
+                            <option value="2566">ปีงบ 2566</option>
+                            <option value="2567">ปีงบ 2567</option>
+                            <option value="2568">ปีงบ 2568</option>
+                            <option value="2569">ปีงบ 2569</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown ครั้งที่จัด -->
+                    <div class="custom-select-wrapper">
+                        <select class="custom-select" id="event-dropdown" onchange="handleFilterChange();">
+                            <option value="All">ทุกครั้งที่จัด (ภาพรวม)</option>
+                            <!-- Options จะถูกใส่ผ่าน JS -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content" id="content-container">
+            
+            <!-- Section 1: KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card border-t-4 border-t-navy flex flex-col justify-center">
+                    <div class="kpi-title">รูป/คนทั้งหมด</div>
+                    <div class="flex items-baseline mt-2">
+                        <span class="kpi-value" id="kpi-total">-</span>
+                        <span class="kpi-unit">รูป/คน</span>
+                    </div>
+                </div>
+                <div class="card border-t-4 border-t-blue-500 flex flex-col justify-center">
+                    <div class="kpi-title">ค่าเฉลี่ยต่อครั้ง</div>
+                    <div class="flex items-baseline mt-2">
+                        <span class="kpi-value" id="kpi-avg">-</span>
+                        <span class="kpi-unit">รูป/คน</span>
+                    </div>
+                </div>
+                <div class="card border-t-4 border-t-indigo-400 flex flex-col justify-center">
+                    <div class="kpi-title">จำนวนครั้งทั้งหมด</div>
+                    <div class="flex items-baseline mt-2">
+                        <span class="kpi-value" id="kpi-events">-</span>
+                        <span class="kpi-unit">ครั้ง</span>
+                    </div>
+                </div>
+                <div class="card border-t-4 border-t-emerald-500 flex flex-col justify-center">
+                    <div class="kpi-title">% เปลี่ยนแปลง (แรกสุด -> ล่าสุด)</div>
+                    <div class="flex items-center mt-2">
+                        <span class="kpi-value" id="kpi-change" style="color: #10B981;">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Line Chart -->
+            <div class="card w-full" style="height: 350px;" id="chart-section">
+                <h3 class="section-title" id="line-chart-title">แนวโน้มจำนวนผู้เข้าร่วม (ครั้งที่ 1/2565 เป็นต้นไป)</h3>
+                <div class="relative w-full h-[270px]">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Section 3, 4, 5: Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Bar Chart -->
+                <div class="card col-span-1" style="height: 420px;">
+                    <h3 class="section-title">10 สาขาวิชาที่เข้าร่วมสูงสุด (รูป/คน)</h3>
+                    <div class="relative w-full h-[340px]">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Donut Chart -->
+                <div class="card col-span-1" style="height: 420px;">
+                    <h3 class="section-title text-center justify-center">สัดส่วนตามสาขาวิชา</h3>
+                    <div class="relative w-full h-[340px] flex justify-center">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Table & Insights container -->
+                <div class="col-span-1 flex flex-col gap-6" style="height: 420px;">
+                    
+                    <!-- Table -->
+                    <div class="card flex flex-col flex-1 overflow-hidden p-0 h-1/2" id="table-box">
+                        <h3 class="section-title p-4 pb-2 m-0 border-b border-gray-100">จำนวนผู้เข้าร่วมแต่ละครั้ง</h3>
+                        <div class="flex-1 overflow-y-auto custom-scrollbar">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4">ครั้งที่/ปีงบ</th>
+                                        <th class="py-2 px-4">ช่วงวันที่</th>
+                                        <th class="py-2 px-4 text-right">รูป/คน</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Insights -->
+                    <div class="card bg-gradient-to-br from-indigo-50 to-blue-50 border-none h-1/2 overflow-y-auto custom-scrollbar" id="insight-box">
+                        <h3 class="section-title text-indigo-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                            </svg>
+                            Insight Highlights
+                        </h3>
+                        <ul class="insight-list" id="insights-list">
+                            <!-- JS injected -->
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-800 text-gray-400 text-center py-4 text-sm mt-auto">
+            © 2026 Executive Dashboard Report. Designed for Professional University Organization.
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const eventsData = [{"year": "2565", "event_name": "ครั้งที่ 1/2565", "event_num": 1, "abs_n": 256501, "date": " 9-15 ต.ค. 64", "count": 215}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "event_num": 10, "abs_n": 256510, "date": " 27-31 ก.ค.65", "count": 152}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "event_num": 11, "abs_n": 256511, "date": " 10-14 ส.ค.65", "count": 153}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "event_num": 12, "abs_n": 256512, "date": " 18-22 ส.ค.65", "count": 115}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "event_num": 13, "abs_n": 256513, "date": " 23-25 ก.ย.65", "count": 168}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "event_num": 2, "abs_n": 256502, "date": " 5-11 พ.ย. 64", "count": 216}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "event_num": 3, "abs_n": 256503, "date": " 3-7 ธ.ค. 64", "count": 230}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "event_num": 4, "abs_n": 256504, "date": " 30 ธ.ค. 64-3 ม.ค.65", "count": 194}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "event_num": 5, "abs_n": 256505, "date": " 15-20 ก.พ.65", "count": 79}, {"year": "2565", "event_name": "ครั้งที่ 6/2565", "event_num": 6, "abs_n": 256506, "date": " 17-20 มี.ค.65", "count": 99}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "event_num": 7, "abs_n": 256507, "date": " 13-17 เม.ย.65", "count": 108}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "event_num": 8, "abs_n": 256508, "date": " 12-16 พ.ค.65", "count": 128}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "event_num": 9, "abs_n": 256509, "date": " 3-7 มิ.ย.65", "count": 98}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "event_num": 1, "abs_n": 256601, "date": "12-16 ตค 65", "count": 171}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "event_num": 10, "abs_n": 256610, "date": "2-5 มิย", "count": 155}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "event_num": 11, "abs_n": 256611, "date": "27-31 กค", "count": 189}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "event_num": 12, "abs_n": 256612, "date": "11-14 สค", "count": 172}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "event_num": 13, "abs_n": 256613, "date": "12-14 กย", "count": 213}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "event_num": 14, "abs_n": 256614, "date": "22-24 กย", "count": 206}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "event_num": 2, "abs_n": 256602, "date": "7-11 พย 65", "count": 120}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "event_num": 3, "abs_n": 256603, "date": "18-22 พย 65", "count": 61}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "event_num": 4, "abs_n": 256604, "date": "3-6 ธค 65", "count": 145}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "event_num": 5, "abs_n": 256605, "date": "30 ธค 65-3 มค 66", "count": 130}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "event_num": 6, "abs_n": 256606, "date": "27-30 มค 66", "count": 54}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "event_num": 7, "abs_n": 256607, "date": "3-6 กพ 66", "count": 80}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "event_num": 8, "abs_n": 256608, "date": "3-7 มีค 66", "count": 97}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "event_num": 9, "abs_n": 256609, "date": "13-17 เมย 66", "count": 158}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "event_num": 1, "abs_n": 256701, "date": "12-15 ต.ค.66", "count": 204}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "event_num": 10, "abs_n": 256710, "date": "1-4 มิย.67", "count": 122}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "event_num": 11, "abs_n": 256711, "date": "26-29 กค 67", "count": 123}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "event_num": 12, "abs_n": 256712, "date": "10-13 สค 67", "count": 109}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "event_num": 13, "abs_n": 256713, "date": "12-15 กย 67", "count": 93}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "event_num": 14, "abs_n": 256714, "date": "27-29 กย 67", "count": 119}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "event_num": 2, "abs_n": 256702, "date": "21-24 ต.ค.66", "count": 238}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "event_num": 3, "abs_n": 256703, "date": "7-9 พ.ย.66", "count": 245}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "event_num": 4, "abs_n": 256704, "date": "2-6 ธ.ค.66", "count": 209}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "event_num": 5, "abs_n": 256705, "date": "29 ธค66-1 มค 67", "count": 237}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "event_num": 6, "abs_n": 256706, "date": "23-26 กพ.67", "count": 251}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "event_num": 7, "abs_n": 256707, "date": "22-25 มี.ค.67", "count": 131}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "event_num": 8, "abs_n": 256708, "date": "12-16 เม.ย..67", "count": 165}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "event_num": 9, "abs_n": 256709, "date": "21-23 พค.67", "count": 145}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "event_num": 1, "abs_n": 256801, "date": "11-14 ตค 67", "count": 116}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "event_num": 10, "abs_n": 256810, "date": "1-4 มิย 68", "count": 112}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "event_num": 11, "abs_n": 256811, "date": "4-6 กค 68", "count": 126}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "event_num": 12, "abs_n": 256812, "date": "26-29 กค 68", "count": 147}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "event_num": 13, "abs_n": 256813, "date": "10-13 สค 68", "count": 142}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "event_num": 14, "abs_n": 256814, "date": "12-15 กย 68", "count": 127}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "event_num": 15, "abs_n": 256815, "date": "26-28 กย", "count": 162}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "event_num": 2, "abs_n": 256802, "date": "22-24 ตค 67", "count": 101}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "event_num": 3, "abs_n": 256803, "date": "7-9 พย 67", "count": 113}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "event_num": 4, "abs_n": 256804, "date": "4-6 ธค 67", "count": 135}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "event_num": 5, "abs_n": 256805, "date": "29 ธค 67-1 มค 68", "count": 140}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "event_num": 6, "abs_n": 256806, "date": "11-13 กพ 68", "count": 111}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "event_num": 7, "abs_n": 256807, "date": "28-30 มีค 68", "count": 87}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "event_num": 8, "abs_n": 256808, "date": "11-15 เมย 68", "count": 116}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "event_num": 9, "abs_n": 256809, "date": "9-12 พค 68", "count": 131}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "event_num": 1, "abs_n": 256901, "date": "11-14 ตค 68", "count": 134}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "event_num": 2, "abs_n": 256902, "date": "29-30 ตค 68", "count": 70}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "event_num": 3, "abs_n": 256903, "date": "7-9 พย 68", "count": 139}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "event_num": 4, "abs_n": 256904, "date": "12-14 ธค 67", "count": 119}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "event_num": 5, "abs_n": 256905, "date": "29 ธค 68-1 มค 69", "count": 109}];
+        const branchesData = [{"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "การพัฒนาสังคม", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "การสอนภาษาอังกฤษ", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "การสอนสังคมศึกษา", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 11}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "นิติศาสตร์มหาบัณฑิต", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "บริหารกิจการคณะสงฆ์", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "ประชาชนทั่วไป", "count": 26}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "ปรัชญา", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "พระพุทธศาสนา", "count": 45}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "พระไตรปิฎกศึกษา", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "พุทธจิตวิทยา", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "ภาษาศาสตร์ (หลักสูตรนานาชาติ)", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "รัฐประศาสนศาสตร์", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "วิปัสนาภาวนา", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 1/2565", "branch": "สันติศึกษา", "count": 26}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "การสอนภาษาอังกฤษ", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 19}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "ประชาชนทั่วไป", "count": 62}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "พระพุทธศาสนา", "count": 24}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "พุทธจิตวิทยา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "ภาษาศาสตร์", "count": 10}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "มหาอาภิธรรมิกะตรี", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "รัฐประศาสนศาสตร์", "count": 13}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "วิชาชีพครู", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 10/2565", "branch": "สันติศึกษา", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "การสอนภาษาอังกฤษ", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "จิตวิทยาชิวิตและความตาย", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "ประกาศนียบัตรวิชาชีพครู", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "ประชาชนทั่วไป", "count": 44}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "พระพุทธศาสนา", "count": 21}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "พระไตรปิฎกศึกษา", "count": 8}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "พระไตรปิฏกศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "พุทธจิตวิทยา", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "ภาษาศาสตร์", "count": 8}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "มหาอาภิธรรมิกะตรี", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "รัฐประศาสนศาสตร์", "count": 13}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 11/2565", "branch": "สันติศึกษา", "count": 17}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "Mindfulness Master", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "การสอนภาษาอังกฤษ", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 8}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "ประชาชนทั่วไป", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "พระพุทธศาสนา", "count": 55}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "พุทธจิตวิทยา", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "ภาษาศาสตร์", "count": 11}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "รัฐประศาสนศาสตร์", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 12/2565", "branch": "สันติศึกษา", "count": 10}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "การสอนภาษาอังกฤษ", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "การสอนสังคมศึกษา", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "จิตวิทยการศึกษาและแนะแนว", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "ประชาชนทั่วไป", "count": 50}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "พระพุทธศาสนา", "count": 19}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "พระไตรปิฎกศึกษา", "count": 5}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "พุทธจิตวิทยา", "count": 17}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "ภาษาศาสตร์", "count": 12}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "รัฐประศาสนศารตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "รัฐประศาสนศาสตร์", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "รัฐศาสตร์", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "วิชาชีพครู", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 13/2565", "branch": "สันติศึกษา", "count": 25}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "การจัดการเชิงพุทธ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "การพัฒนาสังคม", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "การสอนภาษาอังกฤษ", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "การสอนสังคมศึกษา", "count": 31}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 10}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "ปรัชญา", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "พระพุทธศาสนา", "count": 51}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "พระไตรปิฎกศึกษา", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "พุทธจิตวิทยา", "count": 22}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "ภาษาศาสตร์", "count": 5}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "วิปัสสนาภาวนา", "count": 12}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 2/2565", "branch": "สันติศึกษา", "count": 30}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "การพัฒนาสังคม", "count": 8}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "การสอนภาษาอังกฤษ", "count": 9}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "การสอนสังคมศึกษา", "count": 19}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 13}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 17}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "ประชาชนทั่วไป", "count": 14}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "ปรัชญา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พระพุทธศาสนา", "count": 62}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พระไตรปิฎกศึหษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พระไตรปิฏกศึกษา", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พุทธจิตวิทยา", "count": 17}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "พุทธบริหารการศึกษา", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "ภาษาศาสตร์ (หลักสูตรนานาชาติ)", "count": 8}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "รัฐประศาสนศาสตร์", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "วิปัสสนาภาวนา", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 3/2565", "branch": "สันติศึกษา", "count": 22}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "การพัฒนาสังคม", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "การสอนภาษาอังกฤษ", "count": 11}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "การสอนสังคมศึกษา", "count": 19}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "จิตวิทยาการศึกษาเเละการเเนะเเนว", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 11}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "ประชาชนทั่วไป", "count": 32}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "ปรัชญา", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "พระพุทธศาสนา", "count": 50}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "พระไตรปิฎกศึกษา", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "พุทธจิตวิทยา", "count": 13}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "พุทธบริหารการศึกษา", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "ภาษาศาสตร์ (หลักสูตรนานาชาติ)", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "รัฐประศาสนศาสตร์", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "รัฐศาสตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "วิปัสสนาภาวนา", "count": 10}, {"year": "2565", "event_name": "ครั้งที่ 4/2565", "branch": "สันติศึกษา", "count": 13}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "การสอนภาษาอังกฤษ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "ประชาชนทั่วไป", "count": 33}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "พระพุทธศาสนา", "count": 26}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "ภาษาศาสตร์", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "รัฐประศาสนศาสตร์", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 5/2565", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 6/2565", "branch": "ประชาชนทั่วไป", "count": 99}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "การสอนภาษาอังกฤษ", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "การสอนสังคมศึกษา", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "จิตวิทยารปรึกษาแนวพุทธ", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "ประชาชนทั่วไป", "count": 48}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "พระพุทธศาสนา", "count": 18}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "พุทธจิตวิทยา", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "ภาษาศาสตร์ หลักสูตรนานาชาติ", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "รัฐประศาสนศาสตร์", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "รัฐศาสตร์", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 7/2565", "branch": "สันติศึกษา", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "การพัฒนาสังคม", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "นิติศาสตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "ประชาชนทั่วไป", "count": 75}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "พระพุทธศาสนา", "count": 16}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "พระไตรปิฏกศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "พุทธจิตวิทยา", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "รัฐประศาสนศา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "รัฐประศาสนศาสตร์", "count": 7}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "รัฐศาสตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 8/2565", "branch": "สันติศึกษา", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "การสอนภาษาอังกฤษ", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "นิติศาสตร์", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "ประชาชนทั่วไป", "count": 44}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "ปรัชญา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "พระพุทธศาสนา", "count": 18}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "พุทธจิตวิทยา", "count": 2}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "ภาษาศาสตร์", "count": 11}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "รัฐประศาสนศาสตร์", "count": 4}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "สันตศึกษา", "count": 1}, {"year": "2565", "event_name": "ครั้งที่ 9/2565", "branch": "สันติศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "การสอนภาษาอังกฤษ", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 15}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "ประชาชนทั่วไป", "count": 61}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "พระพุทธศาสนา", "count": 20}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "พุทธจิตวิทยา", "count": 29}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "ภาษาศาสตร์", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "มหาอาภิธรรมิกะตรี", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "รัฐประศาสนศาสตร์", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 1/2566", "branch": "สันติศึกษา", "count": 17}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "การสอนภาษาอังกฤษ", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "นิติศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "บาลีสันสกฤต", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "ประชาชนทั่วไป", "count": 71}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "พระพุทธศาสนา", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "พระอภิธรรม", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "พระไตรปิฎกศึกษา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "พุทธจิตวิทยา", "count": 12}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "ภาษาไทย", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "มหาอาภิธรรมิกะโท", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "วิชาชีพครู", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 10/2566", "branch": "สันติศึกษา", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "การสอนพระพุทธศาสนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "การสอนภาษาอังกฤษ", "count": 27}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "นิติศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "ประชาชนทั่วไป", "count": 53}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "ปรัชญา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พระพุทธศาสนา", "count": 32}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พุทธจิตวิทยา", "count": 13}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "ภาษาศาสตร์", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "วิชาชีพครู", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "วิปัสสนาภาวนา", "count": 6}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 11/2566", "branch": "สันติศึกษา", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "English (EP)", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "การสอนภาษาอังกฤษ", "count": 13}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 16}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "ประชาชนทั่วไป", "count": 30}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "ปรัชญา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "พระพุทธศาสนา", "count": 28}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "พุทธจิตวิทยา", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "ภาษาศาสตร์", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "มหาอาภิธรรมิกกะตรี", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "มหาอาภิธรรมิกะเอก", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "มหาอาภิธรรมิกะโท", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "วิชาชีพครู", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 12/2566", "branch": "สันติศึกษา", "count": 31}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "Mindfulness Master", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "การสอนภาษาอังกฤษ", "count": 81}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 15}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "ป.พจ.", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "ประชาชนทั่วไป", "count": 34}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "ปรัชญา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "พระพุทธศาสนา", "count": 29}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "พุทธจิตวิทยา", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "พุทธศาสตร์เพื่อการพัฒนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "ภาษาศาสตร์", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 13/2566", "branch": "สันติศึกษา", "count": 27}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "การสอนภาษาอังกฤษ", "count": 33}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 16}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "ประชาชนทั่วไป", "count": 81}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "ปรัชญา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "พระพุทธศาสนา", "count": 38}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "พุทธบริหารการศึกษา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "ภาษาศาสตร์", "count": 8}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "มหาอาภิธรรมิกะเอก", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "มหาอาภิธรรมิกะโท", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 14/2566", "branch": "สันติศึกษา", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "การพัฒนาสังคม", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "การสอนภาษาอังกฤษ", "count": 24}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 8}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "ประชาชนทั่วไป", "count": 27}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "พระพุทธศาสนา", "count": 19}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "พุทธจิตวิทยา", "count": 8}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "ภาษาศาสตร์", "count": 8}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 2/2566", "branch": "สันติศึกษา", "count": 15}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "การสอนภาษาอังกฤษ", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "ประชาชนทั่วไป", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "พระพุทธศาสนา", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "พุทธจิตวิทยา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "ภาษาศาสตร์", "count": 6}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 3/2566", "branch": "สันติศึกษา", "count": 11}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "การสอนภาษาอังกฤษ", "count": 20}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 17}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "ประชาชนทั่วไป", "count": 65}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "พระพุทธศาสนา", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "พุทธจิตวิทยา", "count": 6}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 4/2566", "branch": "สันติศึกษา", "count": 20}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "การสอนภาษาอังกฤษ", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "ประชาชนทั่วไป", "count": 66}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "พระพุทธศาสนา", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "มหาอาภิธรรมิกะตรี", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 5/2566", "branch": "สันติศึกษา", "count": 13}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "การสอนภาษาอังกฤษ", "count": 9}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "ประชาชนทั่วไป", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "พระพุทธศาสนา", "count": 16}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "พุทธจิตวิทยา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "ภาษาศาสตร์", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 6/2566", "branch": "สันติศึกษา", "count": 9}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "การจัดการเชิงพุทธ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "การปกครองคณะสงฆ์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "การสอนภาษาอังกฤษ", "count": 7}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "ประชาชนทั่วไป", "count": 42}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "พระพุทธศาสนา", "count": 13}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "พุทธจิตวิทยา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "ภาษาศาสตร์", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 7/2566", "branch": "สันติศึกษา", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "การสอนภาษาอังกฤษ", "count": 10}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "นิติศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "ประชาชนทั่วไป", "count": 32}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "พระพุทธศาสนา", "count": 14}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "พุทธจิตวิทยา", "count": 11}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "ภาษาศาสตร์", "count": 5}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 8/2566", "branch": "สันติศึกษา", "count": 11}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "Certificate of Vipassana Master", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "การสอนภาษาอังกฤษ", "count": 6}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "จิตวิทยการศึกษาและการแนะแนว", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "จิตวิทยาชีวิตและความตาย", "count": 18}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "ประชาชนทั่วไป", "count": 82}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "ปรัชญา", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "พระพุทธศาสนา", "count": 11}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "พุทธจิตวิทยา", "count": 6}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "พุทธบริหารการศึกษา", "count": 1}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "ภาษาศาสตร์", "count": 3}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "มหาอาภิธรรมิกะโท", "count": 2}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2566", "event_name": "ครั้งที่ 9/2566", "branch": "สันติศึกษา", "count": 16}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "Mindfullness Master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "Peace Studies", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "Peace studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "การสอนภาษาอังกฤษ", "count": 43}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 19}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "ประชาชนทั่วไป", "count": 49}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "ปรัชญา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พระพุทธศาสนา", "count": 38}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พุทธบริหารการศีกษา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "พุทธบริหารการศึกษา", "count": 8}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "ภาษาจีน", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "ภาษาศาสตร์", "count": 9}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 1/2567", "branch": "สันติศึกษา", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "English (Inter)", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "การสอนภาษาอังกฤษ", "count": 15}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "การสอนสังคมศึกษา", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "ประชาชนทั่วไป", "count": 45}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "ปรัชญา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "พระพุทธศาสนา", "count": 22}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "พุทธจิตวิทยา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 10/2567", "branch": "สันติศึกษา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "การสอนภาษาอังกฤษ", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "ประชาชนทั่วไป", "count": 52}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "พระพุทธศาสนา", "count": 13}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "พุทธจิตวิทยา", "count": 13}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "พุทธบริหารการศึกษา", "count": 14}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "มหาอาภิธรรมิกะเอก", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 11/2567", "branch": "สันติศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "ประชาชนทั่วไป", "count": 52}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "พระพุทธศาสนา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "พุทธจิตวิทยา", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "พุทธบริหารการศึกษา", "count": 20}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "มหาอาภิธรรมิกะเอก", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 12/2567", "branch": "สันติศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "การสอนสังคมศึกษา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "ประชาชนทั่วไป", "count": 38}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "พระพุทธศาสนา", "count": 13}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "พุทธจิตวิทยา", "count": 9}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "ศาสตร์และศิลป์ตามแนวพุทธจิตวิทยา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 13/2567", "branch": "สันติศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "ประชาชนทั่วไป", "count": 53}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "ปรัชญา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พระพุทธศาสนา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พระไตรปิฏกศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พุทธจิตวิทยา", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "พุทธบริหารการศึกษา", "count": 23}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "มหาอาภิธรรมิกะเอก", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 14/2567", "branch": "สันติศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "Mindfulness Master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "Mindfulness master certificate", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "Peace Studies", "count": 8}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "การสอนภาษาอังกฤษ", "count": 80}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 14}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "ประชาชนทั่วไป", "count": 33}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "ปรัชญา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พระพุทธศาสนา", "count": 26}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พระไตรปิฏกศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พุทธจิตวิทยา", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พุทธบริหารการศึกษา", "count": 36}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "พุทธศาสตร์เพื่อการพัฒนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "ภาษาศาสตร์", "count": 11}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 2/2567", "branch": "สันติศึกษา", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "Certificate of Mindfulness Master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "Mindfulness master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "Peace Studies", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "การจัดการเชิงพุทธ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "การสอนภาษาอังกฤษ", "count": 91}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "การสอนสังคมศึกษา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 12}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "ประชาชนทั่วไป", "count": 43}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "ปรัชญา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "พระพุทธศาสนา", "count": 24}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "พุทธจิตวิทยา", "count": 8}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "พุทธบริหารการศึกษา", "count": 15}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "ภาษาศาสตร์", "count": 20}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "วิชาชีพครู", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 3/2567", "branch": "สันติศึกษา", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "การสอนภาษาอังกฤษ", "count": 56}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "การสอนสังคมศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 16}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "ประชาชนทั่วไป", "count": 38}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "ปรัชญา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "พระพุทธศาสนา", "count": 25}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "พุทธจิตวิทยา", "count": 8}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "พุทธบริหารการศึกษา", "count": 28}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "ภาษาศาสตร์", "count": 14}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "วิชาชีพครู", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 4/2567", "branch": "สันติศึกษา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "Certificate of Mindfulness Master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "English International Program", "count": 9}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "Mindfulness Master Certificate", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "การจัดการเชิงพุทธ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "การสอนภาษาอังกฤษ", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "การสอนสังคมศึกษา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 13}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "ประชาชนทั่วไป", "count": 105}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "ปรัชญา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พระพุทธศาสนา", "count": 21}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พุทธจิตวิทยา", "count": 15}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พุทธบริหารการศึกษา", "count": 29}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "พุทธศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "ภาษาศาสตร์", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 5/2567", "branch": "สันติศึกษา", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "English (EP)", "count": 15}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "Mindfulness Master", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "การสอนภาษาอังกฤษ", "count": 14}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "การสอนสังคมศึกษา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "ประชาชนทั่วไป", "count": 82}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "ปรัชญา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พระพุทธศาสนา", "count": 26}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พระไตรปิฎกศึกษา", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พุทธจิตวิทยา", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "พุทธบริหารการศึกษา", "count": 70}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "ภาษาศาสตร์", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 6/2567", "branch": "สันติศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "Buddhist Sdudies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "Buddhist study", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "English International Program", "count": 11}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "Mindfulness Master Certificate", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "การสอนภาษาอังกฤษ", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "การสอนสังคมศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "ประชาชนทั่วไป", "count": 42}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "ปรัชญา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "พระพุทธศาสนา", "count": 15}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "พุทธจิตวิทยา", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "พุทธบริหารการศึกษา", "count": 18}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "ภาษาศาสตร์", "count": 6}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "รัฐประศาสนศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "รัฐศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "วิชาชีพครู", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 7/2567", "branch": "สันติศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "การสอนภาษาอังกฤษ", "count": 7}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "การสอนสังคมศึกษา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "จิตวิทยา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "ปพ.จ.", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "ประชาชนทั่วไป", "count": 70}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "ปรัชญา", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พระพุทธศาสนา", "count": 22}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พุทธจิตวิทยา", "count": 16}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "พุทธบริหารการศึกษา", "count": 13}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "ภาษาศาสตร์", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "มหาอาภิธรรมิกะเอก", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 8/2567", "branch": "สันติศึกษา", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "Peace Studies", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "การสอนภาษาอังกฤษ", "count": 10}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "การสอนสังคมศึกษา", "count": 5}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "จิตวิทยาชีวิตและความตาย", "count": 11}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "นิติศาสตร์", "count": 1}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "ประชาชนทั่วไป", "count": 53}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "ปรัชญา", "count": 4}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "พระพุทธศาสนา", "count": 17}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "พุทธจิตวิทยา", "count": 11}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 3}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "พุทธบริหารการศึกษา", "count": 14}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "มหาอาภิธรรมิกะเอก", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2567", "event_name": "ครั้งที่ 9/2567", "branch": "สันติศึกษา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "การสอนภาษาอังกฤษ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 17}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "ประชาชนทั่วไป", "count": 35}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "พระพุทธศาสนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "พุทธบริหารการศึกษา", "count": 29}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 1/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "ข้าราชการสำนักงานศาลปกครอง", "count": 16}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "ประชาชนทั่วไป", "count": 39}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "พระพุทธศาสนา", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "พุทธจิตวิทยา", "count": 11}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "พุทธบริหารการศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "วิปัสสนาภาวนา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 10/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 8}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "การสอนภาษาอังกฤษ", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "ประชาชนทั่วไป", "count": 38}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "พระพุทธศาสนา", "count": 22}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "พุทธจิตวิทยา", "count": 11}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "พุทธบริหารการศึกษา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "วิปัสสนาภาวนาศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 20}, {"year": "2568", "event_name": "ครั้งที่ 11/2568", "branch": "สันติศึกษา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "Innovative Mindfulness", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "ประชาชนทั่วไป", "count": 59}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พระพุทธศาสนา", "count": 25}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พระไตรปิฎกศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พุทธจิตวิทยาประยุกต์เพื่อพัฒนาศักยภาพมนุษย์", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "วิปัสสนาภาวนาศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "สตินวัตกรรมและสันตศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 12}, {"year": "2568", "event_name": "ครั้งที่ 12/2568", "branch": "สันติศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "Innovative Mindfulness", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "การสอนภาษาอังกฤษ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "จิตวิทยาชีวิตและความตาม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 18}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "ประชาชนทั่วไป", "count": 44}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พระพุทธศาสนา", "count": 23}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พระไตรปิฎกศึกษา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พุทธจิตวิทยา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พุทธบริการการศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "พุทธบริหารการศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "วิปัสสนาภาวนาศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "สตินวัตกรรมและสันตศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 13/2568", "branch": "สันติศึกษา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "การสอนภาษาอังกฤษ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "ประชาชนทั่วไป", "count": 37}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "พระพุทธศาสนา", "count": 16}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "พระไตรปิฎกศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "พุทธจิตวิทยา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "พุทธบริหารการศึกษา", "count": 27}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 12}, {"year": "2568", "event_name": "ครั้งที่ 14/2568", "branch": "สันติศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 13}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "ประชาชนทั่วไป", "count": 66}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "ปรัชญา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "พระพุทธศาสนา", "count": 14}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "พระไตรปิฎกศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "พุทธจิตวิทยา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "พุทธบริหารการศึกษา", "count": 35}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "วิปัสสนาภาวนาศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 15/2568", "branch": "สันติศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "การสอนภาษาอังกฤษ", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "ประชาชนทั่วไป", "count": 22}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "พระพุทธศาสนา", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "พุทธจิตวิทยา", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "พุทธบริหารการศึกษา", "count": 18}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "พุทธศาสตร์ดุษฎีบัณฑิต", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "ภาษาศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "วิชาชีพครู", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "วิปัสสนาภาวนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 8}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 2/2568", "branch": "สันติศึกษา", "count": 11}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "การสอนภาษาอังกฤษ", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "ประชาชนทั่วไป", "count": 34}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "พระพุทธศาสนา", "count": 10}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "พุทธจิตวิทยา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "พุทธบริหารการศึกษา", "count": 23}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "ภาษาไทย", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "วิชาชีพครู", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "วิปัสสนาภาวนา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 3/2568", "branch": "สันติศึกษา", "count": 11}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "การสอนภาษาอังกฤษ", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 19}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "จิตวิทยาการศึกษาและการแนะแนว", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "ประชาชนทั่วไป", "count": 47}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "พระพุทธศาสนา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "พุทธจิตวิทยา", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "พุทธบริหารการศึกษา", "count": 14}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "ภาษาไทย", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "วิชาชีพครู", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "วิปัสสนาภาวนา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 4/2568", "branch": "สันติศึกษา", "count": 9}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "English (Inter)", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "Mindfulness Master", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 12}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "ประชาชนทั่วไป", "count": 73}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "พระพุทธศาสนา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "พุทธจิตวิทยา", "count": 11}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "พุทธบริหารการศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "วิปัสสนาภาวนา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 5/2568", "branch": "สันติศึกษา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "Certificate Program in Mindfulness Master", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "การสอนภาษาอังกฤษ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 15}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "ประชาชนทั่วไป", "count": 42}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "ปรัชญา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "พระพุทธศาสนา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "พระไตรปิฎกศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "พุทธจิตวิทยา", "count": 10}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "พุทธบริหารการศึกษา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "วิปัสสนาภาวนา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 6/2568", "branch": "สันติศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "Certificate Program in Mindfulness Master", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "การสอนภาษาอังกฤษ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "ประชาชนทั่วไป", "count": 39}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "ปรัชญา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "พระพุทธศาสนา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "พุทธบริหารการศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "ศาสตร์และศิลปะชีวิตตามแนวพุทธจิตวิทยา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 7/2568", "branch": "สันติศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "การสอนสังคมศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 17}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "นิติศาสตร์บัณฑิต", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "บริหารการศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "ประชาชนทั่วไป", "count": 53}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "ปรัชญา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "พระพุทธศาสนา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "พุทธจิตวิทยา", "count": 15}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "พุทธบริหารการศึกษา", "count": 5}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "ศาสตร์และศิลปชีวิตตามแนวพุทธจิตวิทยา", "count": 6}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 8/2568", "branch": "สันติศึกษา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 10}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "จิตวิทยาชีวิตและความตาย", "count": 20}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "นิติศาสตร์", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "ประชาชนทั่วไป", "count": 56}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "ปรัชญา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "พระพุทธศาสนา", "count": 7}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "พระไตรปิฎกศึกษา", "count": 4}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "พุทธจิตวิทยา", "count": 10}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "พุทธบริหารการศึกษา", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "ภาษาศาสตร์", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "วิปัสสนาภาวนา", "count": 2}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "ศาสนาเปรียบเทียบ", "count": 3}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 1}, {"year": "2568", "event_name": "ครั้งที่ 9/2568", "branch": "สันติศึกษา", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "การพัฒนาสังคม", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 18}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "นิติศาสตร์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "ประชาชนทั่วไป", "count": 29}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "ปรัชญา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "พระพุทธศาสนา", "count": 7}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "พุทธจิตวิทยา", "count": 9}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "พุทธบริหารการศึกษา", "count": 49}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "วิปัสสนาภาวนา", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 1/2569", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "Mindfuness Master", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "การสอนภาษาอังกฤษ", "count": 41}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "จิตวิทยาชีวิตและความตาย", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "นิติศาสตร์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "พระพุทธศาสนา", "count": 19}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "พุทธจิตวิทยา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "ภาษาศาสตร์", "count": 4}, {"year": "2569", "event_name": "ครั้งที่ 2/2569", "branch": "วิปัสสนาภาวนา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "การสอนภาษาไทย", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "จิตวิทยาชีวิตและความตาย", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "นิติศาสตร์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "ประชาชนทั่วไป", "count": 45}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "ปรัชญา", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "พระพุทธศาสนา", "count": 11}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "พระไตรปิฎกศึกษา", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "พุทธจิตวิทยา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "พุทธบริหารการศึกษา", "count": 38}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "วิชาชีพครู", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "วิปัสสนาภาวนา", "count": 17}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "วิปัสสนาภาวนาศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "ศาสนาเปรียบเทียบ", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 3/2569", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "การบริหารกิจการคณะสงฆ์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "การสอนภาษาไทย", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "จิตวิทยาชีวิตและความตาย", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "นิติศาสตร์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "ประชาชนทั่วไป", "count": 42}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พระพุทธศาสนา", "count": 9}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พระไตรปิฎกศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พุทธจิตวิทยา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พุทธนวัตกรรมการสื่อสาร", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พุทธบริการการศึกษา", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พุทธบริหารการศึกษา", "count": 39}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "พุทธศาสนา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "วิชาชีพครู", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "วิปัสนาภาวนา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "วิปัสสนาภาวนา", "count": 8}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "วิปัสสนาภาวนาศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 4}, {"year": "2569", "event_name": "ครั้งที่ 4/2569", "branch": "สันติศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "การพัฒนาสังคม", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "การสอนภาษาไทย", "count": 3}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "จิตวิทยาการปรึกษาแนวพุทธ", "count": 6}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "จิตวิทยาชีวิตและความตาย", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "นิติศาสตร์", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "ประชาชนทั่วไป", "count": 56}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "ปรัชญา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "พระพุทธศาสนา", "count": 4}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "พระไตรปิฎกศึกษากับโลกสมัยใหม่", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "พุทธจิตวิทยา", "count": 5}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "พุทธบริการการศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "พุทธบริหารการศึกษา", "count": 11}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "วิปัสสนากรรมฐาน", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "วิปัสสนาภาวนา", "count": 8}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "วิปัสสนาภาวนาศึกษา", "count": 1}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "ศาสนาเปรียบเทียบ", "count": 2}, {"year": "2569", "event_name": "ครั้งที่ 5/2569", "branch": "สตินวัตกรรมและสันติศึกษา", "count": 5}];
+        
+        let lineChart, barChart, donutChart;
+        let isDetailedView = false;
+        
+        Chart.register(ChartDataLabels);
+        Chart.defaults.font.family = "'Sarabun', sans-serif";
+        Chart.defaults.color = "#475569";
+        Chart.defaults.plugins.datalabels.display = false;
+
+        function populateEvents() {
+            const selectedYear = document.getElementById('year-dropdown').value;
+            const eventDropdown = document.getElementById('event-dropdown');
+            
+            eventDropdown.innerHTML = '<option value="All">ทุกครั้งที่จัด (ภาพรวม)</option>';
+            
+            let filteredEventsForYear = eventsData;
+            if (selectedYear !== 'All') {
+                filteredEventsForYear = eventsData.filter(e => e.year === selectedYear);
+            }
+
+            let uniqueEvents = [...new Set(filteredEventsForYear.map(item => item.event_num))].sort((a, b) => a - b);
+
+            uniqueEvents.forEach(num => {
+                let evtObj = filteredEventsForYear.find(e => e.event_num === num);
+                if(evtObj) {
+                    let option = document.createElement("option");
+                    option.value = evtObj.event_name;
+                    option.text = evtObj.event_name;
+                    eventDropdown.add(option);
+                }
+            });
+        }
+
+        function handleFilterChange() {
+            const selectedYear = document.getElementById('year-dropdown').value;
+            const selectedEventName = document.getElementById('event-dropdown').value;
+            
+            const container = document.getElementById('content-container');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+            
+            // Scroll to the chart section smoothly
+            document.getElementById('chart-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            let filteredEvents = eventsData;
+            let filteredBranches = branchesData;
+            
+            // Apply Year Filter
+            if (selectedYear !== 'All') {
+                filteredEvents = filteredEvents.filter(d => d.year === selectedYear);
+                filteredBranches = filteredBranches.filter(d => d.year === selectedYear);
+            }
+            
+            // Apply Event Filter
+            if (selectedEventName !== 'All') {
+                filteredEvents = filteredEvents.filter(d => d.event_name === selectedEventName);
+                filteredBranches = filteredBranches.filter(d => d.event_name === selectedEventName);
+            }
+
+            // Dynamic Titles
+            if (selectedEventName !== 'All') {
+                 document.getElementById('line-chart-title').innerHTML = `แนวโน้มจำนวนผู้เข้าร่วม (${selectedEventName})`;
+            } else if (selectedYear !== 'All') {
+                document.getElementById('line-chart-title').innerHTML = `แนวโน้มจำนวนผู้เข้าร่วม (ปีงบประมาณ ${selectedYear})`;
+            } else {
+                document.getElementById('line-chart-title').innerHTML = `แนวโน้มจำนวนผู้เข้าร่วม (ครั้งที่ 1/2565 เป็นต้นไป)`;
+            }
+
+            updateDashboard(filteredEvents, filteredBranches);
+        }
+
+        function toggleView() {
+            isDetailedView = !isDetailedView;
+            const btn = document.getElementById('view-toggle-btn');
+            const tableBox = document.getElementById('table-box');
+            const insightBox = document.getElementById('insight-box');
+            
+            if(isDetailedView) {
+                btn.innerText = "Detailed View";
+                btn.style.backgroundColor = "#1E293B";
+                btn.style.color = "white";
+                // Maximize table, hide insights
+                tableBox.style.height = "100%";
+                insightBox.style.display = "none";
+            } else {
+                btn.innerText = "Executive View";
+                btn.style.backgroundColor = "white";
+                btn.style.color = "#1F3A8A";
+                // Restore split layout
+                tableBox.style.height = "50%";
+                insightBox.style.display = "block";
+            }
+        }
+
+        function updateDashboard(events, branches) {
+            // 1. KPI Calculation
+            const total = events.reduce((sum, d) => sum + d.count, 0);
+            const numEvents = events.length;
+            const avg = numEvents > 0 ? Math.round(total / numEvents) : 0;
+            
+            let changeText = "-";
+            let changeColor = "#94a3b8";
+            if (numEvents >= 2) {
+                const first = events[0].count;
+                const last = events[events.length - 1].count;
+                if (first > 0) {
+                    const pct = ((last - first) / first) * 100;
+                    changeText = (pct > 0 ? "+" : "") + pct.toFixed(1) + "%";
+                    changeColor = pct > 0 ? "#10B981" : (pct < 0 ? "#EF4444" : "#64748b");
+                }
+            }
+
+            animateValue('kpi-total', total);
+            animateValue('kpi-avg', avg);
+            animateValue('kpi-events', numEvents);
+            const elChange = document.getElementById('kpi-change');
+            elChange.innerText = changeText;
+            elChange.style.color = changeColor;
+
+            // 2. Line Chart
+            const labelsLine = events.map(d => d.event_name);
+            const dataLine = events.map(d => d.count);
+            
+            // If only 1 event is selected, display a bar chart for that single point to look better
+            const chartType = numEvents === 1 ? 'bar' : 'line';
+            
+            if (lineChart) lineChart.destroy();
+            lineChart = new Chart(document.getElementById('lineChart'), {
+                type: chartType,
+                data: {
+                    labels: labelsLine,
+                    datasets: [{
+                        label: 'จำนวน (รูป/คน)',
+                        data: dataLine,
+                        borderColor: '#1F3A8A',
+                        backgroundColor: chartType === 'bar' ? '#3B82F6' : 'rgba(31, 58, 138, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#3B82F6',
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4,
+                        borderRadius: chartType === 'bar' ? 6 : 0,
+                        barPercentage: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { padding: 12, cornerRadius: 8 }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [4, 4], color: '#E2E8F0' } },
+                        x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45, font: {size: 11} } }
+                    }
+                }
+            });
+
+            // 3. Branch Data Prep
+            const branchSums = {};
+            branches.forEach(b => {
+                branchSums[b.branch] = (branchSums[b.branch] || 0) + b.count;
+            });
+            
+            let sortedBranches = Object.entries(branchSums).sort((a, b) => b[1] - a[1]);
+            
+            // Bar Chart Top 10 (include all)
+            let top10Bar = sortedBranches.slice(0, 10);
+            
+            if (barChart) barChart.destroy();
+            barChart = new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: top10Bar.map(b => b[0]),
+                    datasets: [{
+                        label: 'รูป/คน',
+                        data: top10Bar.map(b => b[1]),
+                        backgroundColor: '#60A5FA',
+                        borderRadius: 6,
+                        barPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { 
+                            display: true, align: 'right', anchor: 'end', 
+                            color: '#1E293B', font: {weight: 'bold', size: 11} 
+                        }
+                    },
+                    scales: {
+                        x: { display: false, max: top10Bar.length > 0 ? top10Bar[0][1] * 1.2 : 100 },
+                        y: { grid: { display: false }, ticks: { font: {size: 11} } }
+                    },
+                    layout: { padding: { right: 40 } }
+                }
+            });
+
+            // Donut Chart
+            let donutLabels = [];
+            let donutData = [];
+            let othersSum = 0;
+            
+            sortedBranches.forEach((b, i) => {
+                if (i < 5) {
+                    donutLabels.push(b[0]);
+                    donutData.push(b[1]);
+                } else {
+                    othersSum += b[1];
+                }
+            });
+            if (othersSum > 0) {
+                donutLabels.push('อื่นๆ');
+                donutData.push(othersSum);
+            }
+
+            if (donutChart) donutChart.destroy();
+            donutChart = new Chart(document.getElementById('donutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: donutLabels,
+                    datasets: [{
+                        data: donutData,
+                        backgroundColor: ['#1E3A8A', '#2563EB', '#60A5FA', '#93C5FD', '#CBD5E1', '#E2E8F0'],
+                        borderWidth: 2, borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 15 } }
+                    }
+                }
+            });
+
+            // 4. Update Table
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            let tableEvents = [...events].reverse(); // latest first
+            tableEvents.forEach(e => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="py-3 px-4 font-medium text-gray-700">${e.event_name}</td>
+                        <td class="py-3 px-4 text-gray-500">${e.date}</td>
+                        <td class="py-3 px-4 font-bold text-gray-900 text-right">${e.count.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+
+            // 5. Update Insights
+            const insightsList = document.getElementById('insights-list');
+            insightsList.innerHTML = '';
+            
+            if (numEvents > 0) {
+                const maxEvent = [...events].sort((a,b) => b.count - a.count)[0];
+                if(numEvents > 1) {
+                     insightsList.innerHTML += `<li>โครงการที่จัดแล้วมีรูป/คนสูงสุดคือ <b>${maxEvent.event_name}</b> จำนวน ${maxEvent.count} รูป/คน</li>`;
+                }
+               
+                let topBranch = sortedBranches[0];
+                if(topBranch[0] === 'ประชาชนทั่วไป' && sortedBranches.length > 1) topBranch = sortedBranches[1];
+                insightsList.innerHTML += `<li>สาขาวิชาทางวิชาการที่เข้าร่วมสูงสุดคือ <b>${topBranch[0]}</b></li>`;
+                
+                const normalPeople = branchSums['ประชาชนทั่วไป'] || 0;
+                if (normalPeople > 0) {
+                    const pct = ((normalPeople / total) * 100).toFixed(1);
+                    insightsList.innerHTML += `<li>มีสัดส่วนกลุ่ม <b>"ประชาชนทั่วไป"</b> (ไม่มีสาขา) อยู่ที่ ${pct}% ของจำนวนทั้งหมด</li>`;
+                }
+                
+                if (numEvents >= 2) {
+                    const trendWord = changeText.includes('+') ? 'เติบโตขึ้น' : 'ลดลง';
+                    insightsList.innerHTML += `<li>แนวโน้มผู้เข้าปฏิบัติธรรม <b>${trendWord} ${changeText.replace('+','')}</b> เมื่อเทียบระหว่างครั้งแรกกับล่าสุดในตัวเลือก</li>`;
+                }
+            } else {
+                insightsList.innerHTML = '<li>ไม่มีข้อมูล</li>';
+            }
+        }
+
+        function animateValue(id, end) {
+            const obj = document.getElementById(id);
+            const start = 0;
+            const duration = 800;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = current.toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Init
+        window.onload = () => {
+            populateEvents();
+            handleFilterChange();
+        };
+    </script>
+</body>
+</html>
